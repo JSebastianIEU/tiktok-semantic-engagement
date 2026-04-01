@@ -1,8 +1,11 @@
 # Semantic Similarity, Engagement Behavior, and Explainable Hashtag Recommendation on TikTok
 
 **Course:** Natural Language Processing — IE University
+
 **Authors:** Juan Sebastian Pena, Saad Ayomide
+
 **Instructor:** Juan Jose Manjarín Colon
+
 **Date:** 2026
 
 ---
@@ -18,10 +21,10 @@
    ```bash
    pip install -r requirements.txt
    ```
-
 2. **Set your database credentials as environment variables** (contact the project authors for access):
 
    **Windows (PowerShell):**
+
    ```powershell
    $env:PG_HOST     = "aws-1-eu-west-1.pooler.supabase.com"
    $env:PG_PORT     = "5432"
@@ -31,6 +34,7 @@
    ```
 
    **macOS / Linux:**
+
    ```bash
    export PG_HOST="aws-1-eu-west-1.pooler.supabase.com"
    export PG_PORT="5432"
@@ -38,7 +42,6 @@
    export PG_USER="postgres.mlmlcilyoqvbvgljsjtv"
    export PG_PASSWORD="<your-password>"
    ```
-
 3. **Run the download script** (one time only):
 
    ```bash
@@ -46,7 +49,6 @@
    ```
 
    This creates `tiktok_data.db` — a local SQLite copy of all 4 source tables from Supabase.
-
 4. **Open the notebook in VSCode** with the Jupyter extension, or via:
 
    ```bash
@@ -77,6 +79,7 @@ The dataset was collected using a **custom TikTok scraper** built in a prior pro
 > https://github.com/PredictiveSocialMedia/Tik-Tok-Recommendation-System
 
 **Database schema (normalised):**
+
 
 | Table             | Key columns                                                            |
 | ----------------- | ---------------------------------------------------------------------- |
@@ -153,18 +156,20 @@ The notebook is self-contained: it reads from `tiktok_data.db`, generates embedd
 
 All four models converge to the same accuracy ceiling — which is itself the most important classification result.
 
-| Model                   | Feature input                       | Accuracy | Macro F1 |
-| ----------------------- | ----------------------------------- | -------- | -------- |
-| Logistic Regression     | SBERT `caption_clean` (384-dim)     | **59%**  | **0.59** |
-| Multinomial Naive Bayes | TF-IDF `caption_tfidf` (demojised)  | **60%**  | **0.58** |
-| KNN k=5                 | SBERT `caption_clean` (384-dim)     | **59%**  | **0.59** |
-| KNN k=10                | SBERT `caption_clean` (384-dim)     | **59%**  | **0.58** |
+
+| Model                   | Feature input                     | Accuracy | Macro F1 |
+| ----------------------- | --------------------------------- | -------- | -------- |
+| Logistic Regression     | SBERT`caption_clean` (384-dim)    | **59%**  | **0.59** |
+| Multinomial Naive Bayes | TF-IDF`caption_tfidf` (demojised) | **60%**  | **0.58** |
+| KNN k=5                 | SBERT`caption_clean` (384-dim)    | **59%**  | **0.59** |
+| KNN k=10                | SBERT`caption_clean` (384-dim)    | **59%**  | **0.58** |
 
 The convergence of dense (SBERT) and sparse (TF-IDF) representations at the same accuracy level is not a coincidence. It reflects an information ceiling: caption text, however richly encoded, simply does not contain the signals that drive TikTok engagement. This ceiling actually *strengthens* the structural finding — variance reduction cannot be explained by class separation, because no model can cleanly separate classes.
 
 ### Structural Analysis — Variance Reduction vs Random Baseline
 
 All 12 Mann-Whitney U tests: **p = 0.0**. H₁ accepted across every metric and every neighborhood size.
+
 
 | K  | likes_log | comments_log | views_log | shares_log |
 | -- | --------- | ------------ | --------- | ---------- |
@@ -176,10 +181,11 @@ The monotonic decay from K=5 to K=20 is a structural signature: as neighborhood 
 
 ### Hashtag Coverage Improvement
 
-| Method                                     | Posts with ≥1 hashtag                          |
-| ------------------------------------------ | ---------------------------------------------- |
-| Bridge table field only                    | 3.9% (883 / 22,647)                            |
-| Combined (caption inline + bridge table)   | **100%** (22,647 / 22,647; avg 5.58 tags/post) |
+
+| Method                                   | Posts with ≥1 hashtag                         |
+| ---------------------------------------- | ---------------------------------------------- |
+| Bridge table field only                  | 3.9% (883 / 22,647)                            |
+| Combined (caption inline + bridge table) | **100%** (22,647 / 22,647; avg 5.58 tags/post) |
 
 ---
 
@@ -203,28 +209,30 @@ The hashtag recommender does not guess. It surfaces tags that semantically neigh
 
 ## Pipeline Documentation
 
-| Criterion                         | Notebook Section | Description                                                                                                                                                       |
-| --------------------------------- | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **1. Data Collection & Cleaning** | Parts 1–2        | SQLite load from Supabase snapshot; combined hashtag extraction (3.9% → 100%); URL/mention/hashtag removal; `caption_clean` + `caption_tfidf` columns             |
-| **2. Preprocessing**              | Part 3           | Log-transformation y′=log(1+y); binary engagement label via median split on `views_log`; TF-IDF (10k features, bigrams, sublinear TF) fitted on demojised text    |
-| **3. Feature Extraction**         | Part 4           | SBERT `all-MiniLM-L6-v2` (384-dim, L2-normalised) on `caption_clean`; UMAP 2D projection                                                                         |
-| **4. Modelling**                  | Parts 5–7        | FAISS/sklearn KNN for K∈{5,10,20}; Logistic Regression; Multinomial Naive Bayes; KNN classifier; semantic neighborhood structural analysis                        |
-| **5. Evaluation**                 | Parts 6–7        | Classification reports (macro F1, accuracy) for 4 models; confusion matrices; Mann-Whitney U; Levene's test; variance reduction heatmap; 1,000-simulation null distribution |
-| **6. Deployment**                 | Part 9           | `recommend_for_new_caption()` — online inference for unseen captions; live demo (fitness, crypto, meal prep); productionisation guide (Streamlit / FastAPI / batch) |
-| **7. Code Documentation**         | This README      | Setup, pipeline map, results summary, usage instructions, dependency specification                                                                                |
+
+| Criterion                         | Notebook Section | Description                                                                                                                                                                 |
+| --------------------------------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1. Data Collection & Cleaning** | Parts 1–2       | SQLite load from Supabase snapshot; combined hashtag extraction (3.9% → 100%); URL/mention/hashtag removal;`caption_clean` + `caption_tfidf` columns                       |
+| **2. Preprocessing**              | Part 3           | Log-transformation y′=log(1+y); binary engagement label via median split on`views_log`; TF-IDF (10k features, bigrams, sublinear TF) fitted on demojised text              |
+| **3. Feature Extraction**         | Part 4           | SBERT`all-MiniLM-L6-v2` (384-dim, L2-normalised) on `caption_clean`; UMAP 2D projection                                                                                     |
+| **4. Modelling**                  | Parts 5–7       | FAISS/sklearn KNN for K∈{5,10,20}; Logistic Regression; Multinomial Naive Bayes; KNN classifier; semantic neighborhood structural analysis                                 |
+| **5. Evaluation**                 | Parts 6–7       | Classification reports (macro F1, accuracy) for 4 models; confusion matrices; Mann-Whitney U; Levene's test; variance reduction heatmap; 1,000-simulation null distribution |
+| **6. Deployment**                 | Part 9           | `recommend_for_new_caption()` — online inference for unseen captions; live demo (fitness, crypto, meal prep); productionisation guide (Streamlit / FastAPI / batch)        |
+| **7. Code Documentation**         | This README      | Setup, pipeline map, results summary, usage instructions, dependency specification                                                                                          |
 
 ---
 
 ## Limitations
 
-| Limitation                  | Impact                                                                                                                                                              |
-| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Non-textual confounders** | Follower count, audio/music, thumbnail, posting time, and algorithmic amplification dominate engagement — none are present in caption text                          |
-| **60% accuracy ceiling**    | An information limit, not a model limit; both dense (SBERT) and sparse (TF-IDF) representations converge here, confirming the bottleneck is in the data itself     |
-| **Multilingual content**    | `all-MiniLM-L6-v2` is primarily English-trained; non-English captions and TikTok-specific vernacular are embedded less reliably                                     |
-| **K sensitivity**           | Variance reduction ranges from ~10.5% (K=20, views) to ~13.0% (K=5, likes); practitioners must choose K based on precision vs recall preference                    |
-| **Selection bias**          | 3,976 posts (14.9%) dropped for having fewer than 4 clean characters — the working dataset skews toward posts with genuine descriptive content                      |
-| **Static corpus**           | KNN index is fixed; new posts require index updates; at scale, approximate nearest-neighbor structures (FAISS IVF) are needed for sub-second retrieval              |
+
+| Limitation                  | Impact                                                                                                                                                         |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Non-textual confounders** | Follower count, audio/music, thumbnail, posting time, and algorithmic amplification dominate engagement — none are present in caption text                    |
+| **60% accuracy ceiling**    | An information limit, not a model limit; both dense (SBERT) and sparse (TF-IDF) representations converge here, confirming the bottleneck is in the data itself |
+| **Multilingual content**    | `all-MiniLM-L6-v2` is primarily English-trained; non-English captions and TikTok-specific vernacular are embedded less reliably                                |
+| **K sensitivity**           | Variance reduction ranges from ~10.5% (K=20, views) to ~13.0% (K=5, likes); practitioners must choose K based on precision vs recall preference                |
+| **Selection bias**          | 3,976 posts (14.9%) dropped for having fewer than 4 clean characters — the working dataset skews toward posts with genuine descriptive content                |
+| **Static corpus**           | KNN index is fixed; new posts require index updates; at scale, approximate nearest-neighbor structures (FAISS IVF) are needed for sub-second retrieval         |
 
 ---
 
@@ -242,16 +250,18 @@ Without step 2, SBERT would embed hashtag-string similarity rather than topical 
 
 ### Emoji handling strategy
 
+
 | Column          | Emoji treatment               | Used for                                                |
 | --------------- | ----------------------------- | ------------------------------------------------------- |
 | `caption_clean` | Raw Unicode emojis preserved  | SBERT (model handles Unicode natively)                  |
-| `caption_tfidf` | Demojised via `emoji.demojize` | TF-IDF (emoji tokens become countable vocabulary items) |
+| `caption_tfidf` | Demojised via`emoji.demojize` | TF-IDF (emoji tokens become countable vocabulary items) |
 
 ---
 
 ## Dependencies
 
 See `requirements.txt` for the full pinned list. Key packages:
+
 
 | Package                          | Purpose                                                                 |
 | -------------------------------- | ----------------------------------------------------------------------- |
@@ -273,17 +283,3 @@ See `requirements.txt` for the full pinned list. Key packages:
 - Database credentials via environment variables only (never hardcoded)
 - `embeddings_cache.npy` auto-invalidated on row-count mismatch
 - `N_SIMULATIONS = 1000` for stable null distribution
-
----
-
-## Submission Notes
-
-For Turnitin submission, combine the following into **one PDF** in this order:
-
-1. `Introduction.pdf`
-2. `Literature Review.pdf`
-3. `Methodology.pdf`
-4. Report sections covering Data Collection & Cleaning, Preprocessing, Feature Extraction, Evaluation, and Deployment (derived from this notebook)
-5. `NLP_Project_Notebook.ipynb` exported as PDF
-
-The `README.md` (this file) is submitted **separately** as the Code Documentation deliverable.
