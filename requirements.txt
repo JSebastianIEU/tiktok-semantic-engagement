@@ -1,5 +1,4 @@
 # NLP Project — TikTok Semantic Similarity & Hashtag Recommendation
-# IE University, 2026
 # Install: pip install -r requirements.txt
 
 # Database connectivity
