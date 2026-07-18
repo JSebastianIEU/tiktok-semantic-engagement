@@ -8,7 +8,7 @@
 
 ## Data Access
 
-> **Note:** The database credentials are **not included in this repository** because the data is private — it was collected from TikTok via a custom scraper and stored in a private Supabase instance. The dataset itself is included as `tiktok_data.db` (SQLite). If the data needs to be re-downloaded from the source, use `download_data.py`.
+> **Note:** Neither the database credentials nor the dataset are included in this repository. The data was collected from TikTok via a custom scraper and stored in a private Supabase instance; it stays private and is subject to TikTok's terms of service (see `NOTICE`). Run `download_data.py` with your own credentials to build the local `tiktok_data.db` the notebook reads.
 
 ### To regenerate the local data file
 
@@ -17,25 +17,25 @@
    ```bash
    pip install -r requirements.txt
    ```
-2. **Set your database credentials as environment variables** (contact the project authors for access):
+2. **Set your database credentials as environment variables** (copy `.env.example` as a starting point):
 
    **Windows (PowerShell):**
 
    ```powershell
-   $env:PG_HOST     = "aws-1-eu-west-1.pooler.supabase.com"
+   $env:PG_HOST     = "<your-supabase-host>"
    $env:PG_PORT     = "5432"
    $env:PG_DBNAME   = "postgres"
-   $env:PG_USER     = "postgres.mlmlcilyoqvbvgljsjtv"
+   $env:PG_USER     = "<your-supabase-user>"
    $env:PG_PASSWORD = "<your-password>"
    ```
 
    **macOS / Linux:**
 
    ```bash
-   export PG_HOST="aws-1-eu-west-1.pooler.supabase.com"
+   export PG_HOST="<your-supabase-host>"
    export PG_PORT="5432"
    export PG_DBNAME="postgres"
-   export PG_USER="postgres.mlmlcilyoqvbvgljsjtv"
+   export PG_USER="<your-supabase-user>"
    export PG_PASSWORD="<your-password>"
    ```
 3. **Run the download script** (one time only):
@@ -102,11 +102,14 @@ tiktok-semantic-engagement/
 ├── tiktok-semantic-engagement.ipynb                              # Main research notebook
 ├── Explainable_NLP_for_Caption_Similarity_and_Hashtag_Recommendation.pdf  # Full paper
 ├── download_data.py                                              # Data download script
-├── tiktok_data.db                                                # Local SQLite dataset
 ├── figures/                                                      # Visualizations (UMAP, heatmaps, etc.)
 ├── README.md                                                     # This file
 ├── LICENSE                                                       # MIT License
-└── requirements.txt                                              # Pinned Python dependencies
+├── NOTICE                                                        # Dataset terms (TikTok ToS)
+├── .env.example                                                  # Template for database credentials
+└── requirements.txt                                              # Python dependencies
+
+tiktok_data.db is generated locally by download_data.py and is gitignored.
 ```
 
 ---
@@ -259,7 +262,7 @@ Without step 2, SBERT would encode hashtag-string similarity rather than topical
 
 ## Dependencies
 
-See `requirements.txt` for the full pinned list. Key packages:
+See `requirements.txt` for the full list. Versions are stated as minimums (`>=`) rather than exact pins, so a fresh install resolves to current releases. Key packages:
 
 
 | Package                          | Purpose                                                                 |

@@ -9,18 +9,18 @@ Set credentials as environment variables first — see README.md for instruction
 Usage
 -----
 Windows (PowerShell):
-    $env:PG_HOST     = "aws-1-eu-west-1.pooler.supabase.com"
+    $env:PG_HOST     = "<your-supabase-host>"
     $env:PG_PORT     = "5432"
     $env:PG_DBNAME   = "postgres"
-    $env:PG_USER     = "postgres.mlmlcilyoqvbvgljsjtv"
+    $env:PG_USER     = "<your-supabase-user>"
     $env:PG_PASSWORD = "<your-password>"
     python download_data.py
 
 macOS / Linux:
-    export PG_HOST="aws-1-eu-west-1.pooler.supabase.com"
+    export PG_HOST="<your-supabase-host>"
     export PG_PORT="5432"
     export PG_DBNAME="postgres"
-    export PG_USER="postgres.mlmlcilyoqvbvgljsjtv"
+    export PG_USER="<your-supabase-user>"
     export PG_PASSWORD="<your-password>"
     python download_data.py
 
