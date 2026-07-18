@@ -48,3 +48,6 @@ embeddings_cache.npy
 # OS
 Thumbs.db
 .DS_Store
+# Local dataset — regenerate with download_data.py (see README)
+tiktok_data.db
+*.db
