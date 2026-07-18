@@ -1,0 +1,9 @@
+# Notice
+
+The MIT license in `LICENSE` covers the source code and documentation in this
+repository.
+
+It does not cover the dataset. The TikTok data used by this project was
+collected with a custom scraper and remains subject to TikTok's own terms of
+service. It is made available for research and educational purposes only, and
+is not redistributed under the MIT license.
